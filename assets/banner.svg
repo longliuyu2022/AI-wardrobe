@@ -1,0 +1,20 @@
+<svg width="1200" height="340" viewBox="0 0 1200 340" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Wardrobe — 一张全身照，自动入柜 5 件衣服">
+  <defs>
+    <linearGradient id="wbg" x1="0" y1="0" x2="1200" y2="340" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ECE2D6"/>
+      <stop offset="1" stop-color="#C9AD96"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="340" fill="url(#wbg)"/>
+  <circle cx="1080" cy="64" r="120" fill="#D8B8B0" opacity="0.25"/>
+  <circle cx="150" cy="300" r="92" fill="#B89B86" opacity="0.22"/>
+  <circle cx="1012" cy="284" r="46" fill="#E8D2C0" opacity="0.5"/>
+  <circle cx="96" cy="70" r="40" fill="#E8D2C0" opacity="0.45"/>
+  <g stroke="#4A3D33" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M600 96 L600 74 A11 11 0 1 1 579 70"/>
+    <path d="M600 96 L546 140 L654 140 Z"/>
+  </g>
+  <text x="600" y="212" text-anchor="middle" font-family="'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',Arial,sans-serif" font-size="78" font-weight="800" fill="#4A3D33" letter-spacing="1">Wardrobe</text>
+  <text x="600" y="258" text-anchor="middle" font-family="'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif" font-size="27" font-weight="500" fill="#5E5044">一张全身照，自动入柜 5 件衣服</text>
+  <text x="600" y="294" text-anchor="middle" font-family="'Segoe UI',Arial,sans-serif" font-size="19" fill="#8A7B6D" letter-spacing="2">AI DIGITAL CLOSET · WEB + ANDROID</text>
+</svg>

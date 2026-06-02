@@ -1,8 +1,6 @@
 <div align="center">
 
-# 👕 Wardrobe · 智能电子衣柜
-
-### 📸 一张全身照，自动入柜 5 件衣服
+<img src="assets/banner.svg" alt="Wardrobe · 智能电子衣柜 — 一张全身照，自动入柜 5 件衣服" width="840">
 
 面向国内用户的 AI 电子衣柜 · **Web + Android 双端**
 
@@ -12,6 +10,8 @@
 &nbsp;![Next.js](https://img.shields.io/badge/Next.js%2014-000000?logo=nextdotjs&logoColor=white)
 &nbsp;![Kotlin](https://img.shields.io/badge/Android-Kotlin%20Compose-7F52FF?logo=kotlin&logoColor=white)
 &nbsp;[![Stars](https://img.shields.io/github/stars/longliuyu2022/AI-wardrobe?style=social)](https://github.com/longliuyu2022/AI-wardrobe/stargazers)
+
+**中文** · [English](README.en.md)
 
 </div>
 
@@ -45,7 +45,17 @@
 | 🎨 莫兰迪暖咖色 UI | ✅ | 毛玻璃 + 骨架屏 + 移动端底部导航 |
 | 🔪 GPU 真分割 | 🚧 | 替代 bbox 裁切，规划中 |
 
-<!-- 截图待补：建议在此放 Web / Android 应用截图 -->
+## 📸 界面预览
+
+> 下方为占位图，欢迎 PR 替换为真实截图（放到 `assets/screenshots/`，同名替换即可）。
+
+<div align="center">
+
+| 衣柜浏览 | 全身照分割 | AI 搭配 |
+|:---:|:---:|:---:|
+| <img src="assets/screenshots/01-closet.svg" width="200"> | <img src="assets/screenshots/02-segment.svg" width="200"> | <img src="assets/screenshots/03-outfits.svg" width="200"> |
+
+</div>
 
 ## 🏗️ 系统架构
 
