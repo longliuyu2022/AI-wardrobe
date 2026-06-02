@@ -1,0 +1,474 @@
+openapi: 3.0.3
+info:
+  title: Wardrobe API
+  version: 0.2.0
+  description: 电子衣柜业务后端 API。前后端、Android、Web 共享此契约。
+servers:
+  - url: http://localhost:8000
+    description: 本地开发
+  - url: https://your-domain.example.com/api/backend
+    description: 生产（Caddy 反代，替换为你的域名）
+tags:
+  - name: health
+  - name: auth
+  - name: garments
+  - name: outfits
+  - name: export
+paths:
+  /health:
+    get:
+      tags: [health]
+      operationId: healthCheck
+      responses:
+        '200':
+          description: 服务存活
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Health'
+
+  /auth/register:
+    post:
+      tags: [auth]
+      operationId: register
+      description: 凭邀请码注册新账号，返回 set-cookie
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '200':
+          description: 注册成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '403':
+          description: 邀请码不对
+        '409':
+          description: 用户名已被占用
+
+  /auth/login:
+    post:
+      tags: [auth]
+      operationId: login
+      description: 用户名+密码登录，返回 set-cookie
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: 登录成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: 用户名或密码错误
+
+  /auth/logout:
+    post:
+      tags: [auth]
+      operationId: logout
+      description: 清除 session cookie
+      responses:
+        '200':
+          description: 已登出
+
+  /auth/me:
+    get:
+      tags: [auth]
+      operationId: getCurrentUser
+      description: 获取当前登录用户信息
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfo'
+        '401':
+          description: 未登录或 session 失效
+
+  /garments:
+    get:
+      tags: [garments]
+      operationId: listGarments
+      parameters:
+        - in: query
+          name: category
+          schema:
+            $ref: '#/components/schemas/GarmentCategory'
+        - in: query
+          name: season
+          schema:
+            type: string
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 50
+      responses:
+        '200':
+          description: 衣物列表
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Garment'
+    post:
+      tags: [garments]
+      operationId: createGarmentFromSingleItem
+      description: 上传一件衣物的单品照，系统识别属性后入库
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SingleItemUpload'
+      responses:
+        '201':
+          description: 已创建
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Garment'
+
+  /garments/from-full-body:
+    post:
+      tags: [garments]
+      operationId: createGarmentsFromFullBody
+      description: |
+        上传一张全身照。服务端用 VLM 出 bbox + Pillow 裁切出多件单品并识别属性。
+        **原图不落盘**，只保存裁出的服装 crop。
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FullBodyUpload'
+      responses:
+        '201':
+          description: 已裁切并入库
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FullBodyResult'
+
+  /garments/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+    get:
+      tags: [garments]
+      operationId: getGarment
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Garment'
+        '404':
+          description: 不存在
+    patch:
+      tags: [garments]
+      operationId: updateGarment
+      description: 编辑衣物属性，只传想改的字段
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GarmentUpdate'
+      responses:
+        '200':
+          description: 已更新
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Garment'
+        '404':
+          description: 不存在
+    delete:
+      tags: [garments]
+      operationId: deleteGarment
+      responses:
+        '204':
+          description: 已删除（同时删除本地图片文件）
+        '404':
+          description: 不存在
+
+  /outfits/suggest:
+    post:
+      tags: [outfits]
+      operationId: suggestOutfits
+      description: 让 AI 从当前用户的衣柜里组 N 套搭配
+      parameters:
+        - in: query
+          name: count
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 6
+            default: 3
+      responses:
+        '200':
+          description: 搭配建议列表
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OutfitSuggestion'
+
+  /export:
+    get:
+      tags: [export]
+      operationId: exportData
+      description: 导出当前用户所有数据为 ZIP（衣物图片 + 元数据 JSON）
+      responses:
+        '200':
+          description: ZIP 文件
+          content:
+            application/zip:
+              schema:
+                type: string
+                format: binary
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: wardrobe_session
+      description: 用户名+密码登录后服务端 set-cookie 的签名 session，30 天有效
+
+  schemas:
+    Health:
+      type: object
+      required: [status, version]
+      properties:
+        status:
+          type: string
+          example: ok
+        version:
+          type: string
+        time:
+          type: string
+          format: date-time
+
+    RegisterRequest:
+      type: object
+      required: [invite_code, username, password]
+      properties:
+        invite_code:
+          type: string
+          description: 注册邀请码
+        username:
+          type: string
+          minLength: 3
+          maxLength: 32
+          pattern: '^[A-Za-z0-9_\x{4e00}-\x{9fff}]{3,32}$'
+          description: 字母/数字/下划线/中文，3-32 位
+        password:
+          type: string
+          minLength: 6
+          maxLength: 128
+
+    LoginRequest:
+      type: object
+      required: [username, password]
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+
+    AuthResponse:
+      type: object
+      required: [ok]
+      properties:
+        ok:
+          type: boolean
+        user_id:
+          type: string
+        username:
+          type: string
+
+    UserInfo:
+      type: object
+      required: [ok, user_id, username]
+      properties:
+        ok:
+          type: boolean
+        user_id:
+          type: string
+        username:
+          type: string
+        nickname:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+
+    GarmentCategory:
+      type: string
+      enum:
+        - top         # 上衣
+        - outerwear   # 外套
+        - bottom      # 裤/裙
+        - dress       # 连衣裙
+        - shoes       # 鞋
+        - bag         # 包
+        - accessory   # 配饰
+        - other
+
+    Garment:
+      type: object
+      required: [id, category, image_url, created_at]
+      properties:
+        id:
+          type: string
+        category:
+          $ref: '#/components/schemas/GarmentCategory'
+        sub_category:
+          type: string
+          example: "T恤"
+        colors:
+          type: array
+          items:
+            type: string
+        season:
+          type: array
+          items:
+            type: string
+            enum: [spring, summer, autumn, winter]
+        material:
+          type: string
+        style:
+          type: string
+        image_url:
+          type: string
+          description: 图片路径，如 /api/backend/uploads/abc.jpg
+        thumbnail_url:
+          type: string
+          nullable: true
+        wear_count:
+          type: integer
+          default: 0
+        purchase_price:
+          type: number
+          nullable: true
+        purchase_link:
+          type: string
+          nullable: true
+        note:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+
+    GarmentUpdate:
+      type: object
+      description: 所有字段可选，只传想改的
+      properties:
+        category:
+          $ref: '#/components/schemas/GarmentCategory'
+        sub_category:
+          type: string
+        colors:
+          type: array
+          items:
+            type: string
+        season:
+          type: array
+          items:
+            type: string
+        material:
+          type: string
+        style:
+          type: string
+        wear_count:
+          type: integer
+        purchase_price:
+          type: number
+        purchase_link:
+          type: string
+        note:
+          type: string
+
+    SingleItemUpload:
+      type: object
+      required: [file]
+      properties:
+        file:
+          type: string
+          format: binary
+        category:
+          $ref: '#/components/schemas/GarmentCategory'
+
+    FullBodyUpload:
+      type: object
+      required: [file]
+      properties:
+        file:
+          type: string
+          format: binary
+        auto_confirm:
+          type: boolean
+          default: false
+          description: false 时返回结果让用户确认，true 时直接入库
+
+    FullBodyResult:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Garment'
+        warnings:
+          type: array
+          items:
+            type: string
+          description: 例如某件未识别成功
+
+    OutfitSuggestion:
+      type: object
+      properties:
+        name:
+          type: string
+          description: 搭配名称，如 "日常休闲"
+        reason:
+          type: string
+          description: 推荐理由
+        garment_ids:
+          type: array
+          items:
+            type: string
+          description: 涉及的衣物 ID 列表
+
+    ExportData:
+      type: object
+      required: [user, garments]
+      properties:
+        user:
+          $ref: '#/components/schemas/UserInfo'
+        garments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Garment'
+        exported_at:
+          type: string
+          format: date-time

@@ -1,0 +1,50 @@
+# 仅本地开发用的 compose 配置。下方 wardrobe_root / wardrobe_dev 等均为开发占位弱密码,
+# 生产环境请改用强随机密码并通过环境变量 / secrets 注入, 切勿直接沿用这些默认值。
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: wardrobe-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: wardrobe_root
+      MYSQL_DATABASE: wardrobe
+      MYSQL_USER: wardrobe
+      MYSQL_PASSWORD: wardrobe_dev
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+
+  redis:
+    image: redis:7-alpine
+    container_name: wardrobe-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data/redis:/data
+
+  minio:
+    image: minio/minio:latest
+    container_name: wardrobe-minio
+    environment:
+      MINIO_ROOT_USER: wardrobe
+      MINIO_ROOT_PASSWORD: wardrobe_dev
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - ./data/minio:/data
+    command: server /data --console-address ":9001"
+
+  minio-init:
+    image: minio/mc:latest
+    depends_on:
+      - minio
+    entrypoint: >
+      sh -c "
+      sleep 5;
+      mc alias set local http://minio:9000 wardrobe wardrobe_dev;
+      mc mb -p local/wardrobe-uploads || true;
+      mc mb -p local/wardrobe-garments || true;
+      mc anonymous set download local/wardrobe-garments || true;
+      "
