@@ -45,18 +45,6 @@
 | 🎨 莫兰迪暖咖色 UI | ✅ | 毛玻璃 + 骨架屏 + 移动端底部导航 |
 | 🔪 GPU 真分割 | 🚧 | 替代 bbox 裁切，规划中 |
 
-## 📸 界面预览
-
-> 下方为占位图，欢迎 PR 替换为真实截图（放到 `assets/screenshots/`，同名替换即可）。
-
-<div align="center">
-
-| 衣柜浏览 | 全身照分割 | AI 搭配 |
-|:---:|:---:|:---:|
-| <img src="assets/screenshots/01-closet.svg" width="200"> | <img src="assets/screenshots/02-segment.svg" width="200"> | <img src="assets/screenshots/03-outfits.svg" width="200"> |
-
-</div>
-
 ## 🏗️ 系统架构
 
 ```
