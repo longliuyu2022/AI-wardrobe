@@ -1,0 +1,15 @@
+<svg width="300" height="600" viewBox="0 0 300 600" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="AI 搭配 截图占位">
+  <rect x="3" y="3" width="294" height="594" rx="30" fill="#F4EDE4" stroke="#C9AD96" stroke-width="3"/>
+  <rect x="30" y="38" width="150" height="15" rx="7.5" fill="#E0CDB9"/>
+  <g fill="#EBE0D2">
+    <rect x="30" y="80" width="76" height="150" rx="10"/>
+    <rect x="112" y="80" width="76" height="150" rx="10"/>
+    <rect x="194" y="80" width="76" height="150" rx="10"/>
+  </g>
+  <g fill="#E0CDB9">
+    <rect x="30" y="246" width="240" height="40" rx="10"/>
+    <rect x="30" y="298" width="240" height="40" rx="10"/>
+  </g>
+  <text x="150" y="442" text-anchor="middle" font-family="'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif" font-size="24" font-weight="700" fill="#6E5F52">AI 搭配</text>
+  <text x="150" y="470" text-anchor="middle" font-family="'Segoe UI',Arial,sans-serif" font-size="13" fill="#AC9E8F" letter-spacing="1">Outfits · placeholder</text>
+</svg>

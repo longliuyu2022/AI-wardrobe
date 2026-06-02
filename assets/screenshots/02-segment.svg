@@ -1,0 +1,12 @@
+<svg width="300" height="600" viewBox="0 0 300 600" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="全身照分割 截图占位">
+  <rect x="3" y="3" width="294" height="594" rx="30" fill="#F4EDE4" stroke="#C9AD96" stroke-width="3"/>
+  <rect x="30" y="38" width="150" height="15" rx="7.5" fill="#E0CDB9"/>
+  <rect x="74" y="80" width="152" height="210" rx="12" fill="#EBE0D2"/>
+  <g stroke="#C99B95" stroke-width="3" stroke-dasharray="8 6" fill="none">
+    <rect x="92" y="98" width="116" height="60" rx="6"/>
+    <rect x="92" y="166" width="116" height="56" rx="6"/>
+    <rect x="110" y="230" width="80" height="44" rx="6"/>
+  </g>
+  <text x="150" y="442" text-anchor="middle" font-family="'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif" font-size="24" font-weight="700" fill="#6E5F52">全身照分割</text>
+  <text x="150" y="470" text-anchor="middle" font-family="'Segoe UI',Arial,sans-serif" font-size="13" fill="#AC9E8F" letter-spacing="1">Segmentation · placeholder</text>
+</svg>
