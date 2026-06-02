@@ -1,0 +1,82 @@
+# ---------- 系统 / IDE ----------
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# ---------- Claude Code ----------
+.claude/settings.local.json
+
+# ---------- 环境变量 / 密钥 ----------
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.installed.cfg
+*.egg
+.venv/
+venv/
+env/
+.uv-cache/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+.tox/
+
+# ---------- Node / Web ----------
+node_modules/
+.pnpm-store/
+.next/
+out/
+.turbo/
+*.tsbuildinfo
+
+# ---------- Android / Kotlin ----------
+*.iml
+.gradle/
+local.properties
+build/
+captures/
+.cxx/
+*.apk
+*.aab
+*.dex
+*.class
+
+# ---------- Docker / 数据 ----------
+/data/
+*.log
+logs/
+
+# ---------- AI 模型权重（太大不入库） ----------
+models/*.pth
+models/*.onnx
+models/*.bin
+models/*.safetensors
+
+# ---------- 用户上传（本地开发） ----------
+uploads/
+tmp/
+backend/data/
+
+# 这些坚决不能进 git
+.invite-code
+*.env
+*.env.bak*
+**/.env.bak*

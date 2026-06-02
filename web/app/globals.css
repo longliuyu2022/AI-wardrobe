@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background:
+    radial-gradient(1200px 600px at 90% -10%, rgba(217, 168, 168, 0.18), transparent 60%),
+    radial-gradient(900px 500px at -10% 110%, rgba(201, 179, 156, 0.22), transparent 60%),
+    linear-gradient(180deg, #fbf8f4 0%, #f6efe7 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-toast-in {
+  animation: toast-in 0.25s ease-out;
+}
