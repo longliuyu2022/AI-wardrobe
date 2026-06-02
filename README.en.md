@@ -45,18 +45,6 @@ An AI-powered digital wardrobe · **Web + Android**
 | 🎨 Morandi warm-coffee UI | ✅ | Glassmorphism + skeletons + mobile bottom nav |
 | 🔪 GPU true segmentation | 🚧 | To replace bbox cropping — planned |
 
-## 📸 Screenshots
-
-> Placeholders below — PRs welcome to replace them with real screenshots (drop into `assets/screenshots/`, same filenames).
-
-<div align="center">
-
-| Closet | Segmentation | Outfits |
-|:---:|:---:|:---:|
-| <img src="assets/screenshots/01-closet.svg" width="200"> | <img src="assets/screenshots/02-segment.svg" width="200"> | <img src="assets/screenshots/03-outfits.svg" width="200"> |
-
-</div>
-
 ## 🏗️ Architecture
 
 ```
