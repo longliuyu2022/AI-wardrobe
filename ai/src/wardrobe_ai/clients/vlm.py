@@ -28,7 +28,5 @@ async def vlm_tag(image_bytes: bytes) -> list[str]:
 
     if not settings.doubao_api_key:
         return ["_stub_tag"]
-    # TODO: 调用豆包 vision API
-    #   - 图像走 base64 或先上传 OSS 拿 URL
-    #   - 用 OpenAI 兼容协议
+    # 豆包 vision API: 图像走 base64, OpenAI 兼容协议
     raise NotImplementedError("接入豆包 VLM")

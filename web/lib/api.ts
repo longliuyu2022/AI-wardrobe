@@ -1,6 +1,5 @@
 // Backend API client。
-// TODO: 用 openapi-typescript 从 ../openapi/wardrobe.openapi.yaml 生成类型，
-// 当前手写最小定义以让骨架编译通过。
+// 类型手写最小定义，未来可考虑用 openapi-typescript 从 openapi/wardrobe.openapi.yaml 自动生成。
 
 const BASE = "/api/backend";
 

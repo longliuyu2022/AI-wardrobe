@@ -24,8 +24,8 @@ router = APIRouter(dependencies=[Depends(require_session)])
 UPLOADS_DIR = Path("data/uploads").resolve()
 
 
-def _save_upload(image_bytes: bytes, content_type: str | None) -> tuple[str, str]:
-    """存图到 data/uploads/<id>.<ext>, 返回 (image_id, image_url)."""
+def _save_upload(image_bytes: bytes, content_type: str | None) -> tuple[str, str, str]:
+    """存图到 data/uploads/<id>.<ext> + 缩略图, 返回 (image_id, image_url, thumbnail_url)."""
     UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
     # 用 magic bytes 推 ext, 不信任 client 给的 content_type
     sniffed = imghdr.what(None, h=image_bytes[:32]) or "bin"
@@ -34,9 +34,18 @@ def _save_upload(image_bytes: bytes, content_type: str | None) -> tuple[str, str
     image_id = uuid.uuid4().hex
     target = UPLOADS_DIR / f"{image_id}.{ext}"
     target.write_bytes(image_bytes)
+    # 生成缩略图（长边 256px, JPEG 80）
+    try:
+        im = Image.open(BytesIO(image_bytes))
+        im.thumbnail((256, 256))
+        thumb_path = UPLOADS_DIR / f"{image_id}_thumb.jpg"
+        im.convert("RGB").save(thumb_path, "JPEG", quality=80, optimize=True)
+    except Exception:
+        pass  # 缩略图生成失败不影响上传
     # 通过 Next.js rewrite, 用户访问的 URL 是 /api/backend/uploads/<file>
     image_url = f"/api/backend/uploads/{image_id}.{ext}"
-    return image_id, image_url
+    thumbnail_url = f"/api/backend/uploads/{image_id}_thumb.jpg"
+    return image_id, image_url, thumbnail_url
 
 
 @router.get("", response_model=list[GarmentOut])
@@ -70,7 +79,7 @@ async def create_from_single_item(
     if len(image_bytes) > 20 * 1024 * 1024:
         raise HTTPException(status_code=413, detail="file too large (>20MB)")
 
-    image_id, image_url = _save_upload(image_bytes, file.content_type)
+    image_id, image_url, thumbnail_url = _save_upload(image_bytes, file.content_type)
 
     # 调 AI service 识别
     try:
@@ -97,7 +106,7 @@ async def create_from_single_item(
         material=attrs.get("material"),
         style=attrs.get("style"),
         image_url=image_url,
-        thumbnail_url=None,
+        thumbnail_url=thumbnail_url,
         wear_count=0,
         created_at=datetime.utcnow(),
     )
@@ -175,6 +184,14 @@ async def create_from_full_body(
             crop_bytes = buf.getvalue()
             crop_id = uuid.uuid4().hex
             (UPLOADS_DIR / f"{crop_id}.jpg").write_bytes(crop_bytes)
+            # 缩略图
+            try:
+                crop.thumbnail((256, 256))
+                crop.convert("RGB").save(
+                    UPLOADS_DIR / f"{crop_id}_thumb.jpg", "JPEG", quality=80, optimize=True
+                )
+            except Exception:
+                pass
             prepared.append((meta, crop_bytes, crop_id))
         except Exception as e:
             warnings.append(f"忽略 {meta.get('label')}: 裁切失败 {e!r}")
@@ -227,7 +244,7 @@ async def create_from_full_body(
             material=attrs.get("material") or None,
             style=attrs.get("style") or None,
             image_url=f"/api/backend/uploads/{crop_id}.jpg",
-            thumbnail_url=None,
+            thumbnail_url=f"/api/backend/uploads/{crop_id}_thumb.jpg",
             wear_count=0,
             created_at=datetime.utcnow(),
         )

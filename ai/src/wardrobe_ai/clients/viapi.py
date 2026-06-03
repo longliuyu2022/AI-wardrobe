@@ -3,7 +3,8 @@
 文档：https://help.aliyun.com/zh/viapi/developer-reference/api-overview
 计费：https://help.aliyun.com/zh/viapi/product-overview/billing-is-introduced-14
 
-当前是桩实现 — Phase 0 真实接入时填实 SDK 调用。
+优先走 SenseNova VLM（已实现，免费 quota）。VIAPI 作为备选供应商，
+接入时需安装 alibabacloud-imageseg / alibabacloud-imageenhan SDK。
 """
 
 from ..settings import settings
@@ -28,5 +29,5 @@ async def viapi_recognize_clothes(image_bytes: bytes) -> dict:
             "confidence": 0.92,
             "_stub": True,
         }
-    # TODO: 使用 alibabacloud-imageseg / alibabacloud-imageenhan SDK
+    # 需安装 alibabacloud-imageseg / alibabacloud-imageenhan SDK
     raise NotImplementedError("接入阿里云 VIAPI")

@@ -63,6 +63,9 @@ captures/
 /data/
 *.log
 logs/
+*.db
+*.db-shm
+*.db-wal
 
 # ---------- AI 模型权重（太大不入库） ----------
 models/*.pth
