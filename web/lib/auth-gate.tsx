@@ -9,9 +9,6 @@ type Mode = "login" | "register";
 
 export function AuthGate({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  // 管理后台有自己的鉴权, 不走 AuthGate
-  if (pathname.startsWith("/admin")) return <>{children}</>;
-
   const [me, setMe] = useState<Me | null | undefined>(undefined); // undefined = loading
   const [mode, setMode] = useState<Mode>("login");
   const [invite, setInvite] = useState("");
@@ -19,6 +16,9 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // 管理后台有自己的鉴权, 不走 AuthGate
+  if (pathname.startsWith("/admin")) return <>{children}</>;
 
   async function refresh() {
     const m = await checkAuth();

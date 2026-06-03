@@ -21,10 +21,12 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install -e ".[dev]"
+        run: |
+          pip install -e .
+          pip install ruff pytest pytest-asyncio
 
       - name: Lint (ruff)
-        run: python -m ruff check .
+        run: ruff check .
 
       - name: Test
         run: pytest -v
