@@ -5,8 +5,8 @@ from alembic import context
 from sqlalchemy import engine_from_config, pool
 
 # 导入 app 的 Base 和 models（注册到 Base.metadata）
-from wardrobe_api.db import Base
 from wardrobe_api import models  # noqa: F401
+from wardrobe_api.db import Base
 from wardrobe_api.settings import settings
 
 config = context.config

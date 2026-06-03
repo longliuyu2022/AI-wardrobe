@@ -17,9 +17,6 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // 管理后台有自己的鉴权, 不走 AuthGate
-  if (pathname.startsWith("/admin")) return <>{children}</>;
-
   async function refresh() {
     const m = await checkAuth();
     setMe(m);
@@ -28,6 +25,9 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     refresh();
   }, []);
+
+  // 管理后台有自己的鉴权, 不走 AuthGate
+  if (pathname.startsWith("/admin")) return <>{children}</>;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
