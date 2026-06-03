@@ -105,6 +105,24 @@ cd android && ./gradlew installDebug
 > ⚠️ 构建前把 `android/app/src/main/kotlin/com/wardrobe/data/ApiClient.kt` 里的 `BASE_URL` 改成你自己的后端地址。APK 也可在 GitHub Releases 下载。
 </details>
 
+## 🐳 一键部署（Docker）
+
+> 需要一台 Linux 服务器 + Docker 24+（含 compose plugin）+ 一个域名。Caddy 自动申请 HTTPS 证书。
+
+```bash
+git clone https://github.com/longliuyu2022/AI-wardrobe.git && cd AI-wardrobe
+cp .env.docker .env
+# 编辑 .env：填域名、SenseNova API Key、session_secret（openssl rand -hex 32）
+make deploy          # 构建 + 启动 (首次约 3-5 分钟)
+```
+
+三个容器 + Caddy 反代自动跑起来。`data/` 挂载在 Docker volume 里，重启不丢数据。
+
+```bash
+make deploy-down     # 停止并删除容器
+docker compose -f docker-compose.prod.yml logs -f   # 查看日志
+```
+
 ## 📡 API 端点
 
 | 方法 | 路径 | 说明 |

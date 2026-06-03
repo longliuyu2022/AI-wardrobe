@@ -78,5 +78,6 @@ backend/data/
 # 这些坚决不能进 git
 .invite-code
 *.env
+!.env.docker        # 模板文件需要入库
 *.env.bak*
 **/.env.bak*
