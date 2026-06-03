@@ -29,7 +29,9 @@ jobs:
         run: ruff check .
 
       - name: Test
-        run: pytest -v
+        run: |
+          mkdir -p data/uploads
+          pytest -v
 
   web:
     name: Web (lint + type-check)
