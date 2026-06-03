@@ -44,3 +44,11 @@ target-version = "py311"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP"]
+ignore = ["B008"]  # FastAPI Depends()/File()/Form()/Query() 标准用法
+
+[tool.ruff.lint.per-file-ignores]
+"alembic/versions/*.py" = ["E501", "I001", "UP"]  # 自动生成的迁移文件
+"src/wardrobe_api/routers/admin.py" = ["E501"]  # 已有代码，行长度
+"src/wardrobe_api/routers/wearlog.py" = ["E501", "B904"]  # 已有代码
+"src/wardrobe_api/routers/garments.py" = ["E501", "E702", "B905"]  # 已有代码
+"src/wardrobe_api/schemas.py" = ["UP042"]  # 已有代码 str+Enum 模式

@@ -3,11 +3,10 @@ from __future__ import annotations
 
 from fastapi.testclient import TestClient
 
-from conftest import MOCK_IDENTIFY_RESPONSE
-
 
 def _make_test_image() -> tuple[str, bytes]:
     from io import BytesIO
+
     from PIL import Image
 
     buf = BytesIO()

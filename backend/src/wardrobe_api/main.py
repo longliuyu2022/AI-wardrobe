@@ -10,7 +10,6 @@ from .db import Base, engine
 from .routers import admin, auth, export, garments, health, outfits, wearlog
 from .settings import settings
 
-
 UPLOADS_DIR = Path("data/uploads").resolve()
 
 

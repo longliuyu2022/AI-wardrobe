@@ -42,9 +42,12 @@ class TestAdminUsers:
         r = admin_client.get("/admin/users/nonexistent")
         assert r.status_code == 404
 
-    def test_user_detail_with_data(self, admin_client: TestClient, auth_client: TestClient, mock_ai_service) -> None:
+    def test_user_detail_with_data(
+        self, admin_client: TestClient, auth_client: TestClient, mock_ai_service
+    ) -> None:
         # auth_client 已创建 testuser
         from io import BytesIO
+
         from PIL import Image
 
         buf = BytesIO()

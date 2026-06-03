@@ -10,6 +10,7 @@ from fastapi.testclient import TestClient
 
 def _make_test_image() -> tuple[str, bytes]:
     from io import BytesIO
+
     from PIL import Image
 
     buf = BytesIO()

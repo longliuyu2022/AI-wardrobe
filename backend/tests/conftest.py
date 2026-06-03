@@ -44,6 +44,7 @@ app.dependency_overrides[get_db] = _override_get_db
 
 # admin.py 用 next(get_db()) 直接调用，不走依赖注入，需要 patch 模块级引用
 import wardrobe_api.routers.admin as _admin_mod  # noqa: E402
+
 _original_admin_get_db = _admin_mod.get_db
 
 

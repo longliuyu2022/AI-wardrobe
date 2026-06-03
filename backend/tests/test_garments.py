@@ -1,16 +1,13 @@
 """衣物 CRUD 端点测试。"""
 from __future__ import annotations
 
-from unittest.mock import MagicMock, patch
-
 from fastapi.testclient import TestClient
-
-from conftest import MOCK_IDENTIFY_RESPONSE
 
 
 def _make_test_image() -> tuple[str, bytes]:
     """生成一个最小的有效 JPEG 文件。"""
     from io import BytesIO
+
     from PIL import Image
 
     buf = BytesIO()

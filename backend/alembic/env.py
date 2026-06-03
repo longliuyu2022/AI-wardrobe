@@ -1,8 +1,9 @@
 """Alembic 环境配置 — 读取 app settings 的数据库 URL，自动发现 models。"""
 from logging.config import fileConfig
 
-from alembic import context
 from sqlalchemy import engine_from_config, pool
+
+from alembic import context
 
 # 导入 app 的 Base 和 models（注册到 Base.metadata）
 from wardrobe_api import models  # noqa: F401

@@ -14,7 +14,7 @@ from PIL import Image, ImageOps
 from sqlalchemy.orm import Session
 
 from ..db import get_db
-from ..models import Garment, User
+from ..models import Garment
 from ..schemas import FullBodyResult, GarmentCategory, GarmentOut, GarmentUpdate
 from ..security import require_session
 from ..settings import settings
