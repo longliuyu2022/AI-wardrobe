@@ -1,0 +1,60 @@
+# 一键部署：cp .env.docker .env && docker compose -f docker-compose.prod.yml up -d
+# 需要 Docker 24+ (含 compose plugin)。Caddy 自动申请 HTTPS 证书。
+services:
+
+  backend:
+    build: ./backend
+    container_name: wardrobe-backend
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      WARDROBE_DATABASE_URL: sqlite:///./data/wardrobe.db
+      WARDROBE_AI_SERVICE_URL: http://wardrobe-ai:8003
+      WARDROBE_CORS_ORIGINS: '["http://localhost:3000","https://${DOMAIN}"]'
+    volumes:
+      - wardrobe-uploads:/app/data/uploads
+      - wardrobe-db:/app/data
+    networks: [wardrobe]
+
+  ai:
+    build: ./ai
+    container_name: wardrobe-ai
+    restart: unless-stopped
+    env_file: .env
+    networks: [wardrobe]
+
+  web:
+    build:
+      context: ./web
+      args:
+        NEXT_PUBLIC_API_URL: /api/backend
+    container_name: wardrobe-web
+    restart: unless-stopped
+    networks: [wardrobe]
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: wardrobe-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN:-localhost}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - backend
+      - web
+    networks: [wardrobe]
+
+networks:
+  wardrobe:
+
+volumes:
+  wardrobe-uploads:
+  wardrobe-db:
+  caddy-data:
+  caddy-config:

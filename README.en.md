@@ -105,6 +105,24 @@ cd android && ./gradlew installDebug
 > ⚠️ Before building, change `BASE_URL` in `android/app/src/main/kotlin/com/wardrobe/data/ApiClient.kt` to your own backend address. Prebuilt APKs are also available under GitHub Releases.
 </details>
 
+## 🐳 One-click Deploy (Docker)
+
+> Requires a Linux server with Docker 24+ (compose plugin) and a domain name. Caddy auto-provisions HTTPS.
+
+```bash
+git clone https://github.com/longliuyu2022/AI-wardrobe.git && cd AI-wardrobe
+cp .env.docker .env
+# Edit .env: fill in your domain, SenseNova API key, session_secret (openssl rand -hex 32)
+make deploy          # build + start (~3-5 min first time)
+```
+
+Three containers + Caddy reverse proxy spin up automatically. `data/` lives in a Docker volume — survives restarts.
+
+```bash
+make deploy-down     # stop & remove containers
+docker compose -f docker-compose.prod.yml logs -f   # view logs
+```
+
 ## 📡 API Endpoints
 
 | Method | Path | Description |
