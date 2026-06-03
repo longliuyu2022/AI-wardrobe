@@ -169,11 +169,11 @@ wardrobe/
 - 🙈 **Full-body originals are never persisted** — only cropped items are saved; the intermediate state (with the human body) is released after a single pipeline pass
 - 🇨🇳 **Data loop stays in-region** — VLM via SenseNova (an Alibaba Cloud sub-product); no overseas LLM calls
 - 📲 **Photo processing prefers the server** — the client only does light compression (1024px / JPEG 0.8) before upload
-- 🛡️ **`uploads/` deletions MUST be filtered by user_id** (see [CLAUDE.md](CLAUDE.md))
+- 🛡️ **`uploads/` deletions MUST be filtered by user_id** — shared directory, deletions are irreversible
 
 ## 🤝 Contributing
 
-Issues and PRs are welcome. Please read [CLAUDE.md](CLAUDE.md) for project constraints and the shared-directory deletion safety rules.
+Issues and PRs are welcome.
 
 ## ⭐ Star History
 

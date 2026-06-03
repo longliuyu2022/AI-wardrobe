@@ -169,11 +169,11 @@ wardrobe/
 - 🙈 **全身照原图不落盘**，只存裁出的单件，中间态（含人体）走完 pipeline 即释放
 - 🇨🇳 **数据闭环在境内**，VLM 用 SenseNova（阿里云子产品），不调用境外大模型
 - 📲 **照片处理优先在服务端**，端侧只做轻量压缩（1024px / JPEG 0.8）后上传
-- 🛡️ **`uploads/` 删除操作必须按 user_id 过滤**（详见 [CLAUDE.md](CLAUDE.md)）
+- 🛡️ **`uploads/` 删除操作必须按 user_id 过滤** — 共享目录，误删不可恢复
 
 ## 🤝 贡献
 
-欢迎 Issue / PR。提交前请阅读 [CLAUDE.md](CLAUDE.md) 了解项目约束与共享目录的删除安全规范。
+欢迎 Issue / PR。
 
 ## ⭐ Star History
 
