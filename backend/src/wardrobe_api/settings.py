@@ -1,4 +1,4 @@
-from pydantic import Field
+from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -33,6 +33,18 @@ class Settings(BaseSettings):
     jwt_expire_seconds: int = 60 * 60 * 24 * 7
 
     cors_origins: list[str] = Field(default_factory=lambda: ["http://localhost:3000"])
+
+    @model_validator(mode="after")
+    def _reject_insecure_secret_in_prod(self) -> "Settings":
+        """生产环境 (WARDROBE_DEBUG=false) 拒绝占位/过短的 session 密钥, 防止被伪造登录态。"""
+        if not self.debug:
+            secret = self.session_secret or ""
+            if "change-me" in secret.lower() or len(secret) < 16:
+                raise ValueError(
+                    "WARDROBE_SESSION_SECRET 不安全 (仍是占位值或过短)。"
+                    "生产环境必须设置随机密钥, 例如: openssl rand -hex 32"
+                )
+        return self
 
 
 settings = Settings()

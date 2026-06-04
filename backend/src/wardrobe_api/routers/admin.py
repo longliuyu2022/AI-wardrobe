@@ -10,6 +10,7 @@ from sqlalchemy import func
 
 from ..db import get_db
 from ..models import Garment, User
+from ..security import issue_admin_session, verify_admin_session
 from ..settings import settings
 
 router = APIRouter()
@@ -21,8 +22,8 @@ UPLOADS_DIR = Path("data/uploads").resolve()
 def _check_admin(admin_token: str | None) -> None:
     if not settings.admin_code:
         raise HTTPException(status_code=403, detail="管理员密码未配置")
-    if not admin_token or not hmac.compare_digest(admin_token, settings.admin_code):
-        raise HTTPException(status_code=401, detail="管理员密码错误")
+    if not admin_token or not verify_admin_session(admin_token):
+        raise HTTPException(status_code=401, detail="管理员未登录或登录已过期")
 
 
 class AdminLoginBody(BaseModel):
@@ -35,9 +36,10 @@ def admin_login(body: AdminLoginBody, response: Response) -> dict:
         raise HTTPException(status_code=403, detail="管理员密码未配置")
     if not hmac.compare_digest(body.password.strip(), settings.admin_code.strip()):
         raise HTTPException(status_code=401, detail="管理员密码错误")
+    # 不再把密码原文写进 cookie;签发带时效的签名 token (轮换 admin_code 即失效)
     response.set_cookie(
         key=ADMIN_COOKIE,
-        value=settings.admin_code,
+        value=issue_admin_session(),
         max_age=60 * 60 * 24,  # 24h
         httponly=True,
         secure=True,

@@ -128,10 +128,11 @@ def auth_client(client):
 def admin_client(client):
     """已登录管理后台的 TestClient。"""
     from wardrobe_api.routers.admin import ADMIN_COOKIE
+    from wardrobe_api.security import issue_admin_session
 
     # admin cookie 的 path="/api/backend/admin"，TestClient 走 /admin/... 路径不匹配
-    # 直接注入 cookie 到 _cookies dict
-    client._cookies[ADMIN_COOKIE] = "test-admin-code"
+    # 直接注入签名 token 到 _cookies dict (与 admin_login 端点签发的一致)
+    client._cookies[ADMIN_COOKIE] = issue_admin_session()
     return client
 
 
