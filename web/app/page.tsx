@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
 import { listGarments, exportData, type Garment } from "@/lib/api";
-import { zhCategory, CATEGORY_ZH } from "@/lib/i18n";
+import { zhCategory, zhColor, CATEGORY_ZH } from "@/lib/i18n";
 import { Badge } from "@/components/badge";
 import { SkeletonCard } from "@/components/skeleton";
 
@@ -161,7 +161,7 @@ export default function Home() {
                     </p>
                     <div className="mt-1 flex flex-wrap gap-0.5">
                       {(g.colors ?? []).slice(0, 2).map((c) => (
-                        <Badge key={c} dot>{zhCategory(c) ? c : c}</Badge>
+                        <Badge key={c} dot>{zhColor(c)}</Badge>
                       ))}
                     </div>
                   </div>

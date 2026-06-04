@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import asyncio
-import imghdr
 import uuid
 from datetime import datetime
 from io import BytesIO
@@ -11,6 +10,7 @@ from pathlib import Path
 import httpx
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 from PIL import Image, ImageOps
+from sqlalchemy import String, cast
 from sqlalchemy.orm import Session
 
 from ..db import get_db
@@ -24,13 +24,24 @@ router = APIRouter(dependencies=[Depends(require_session)])
 UPLOADS_DIR = Path("data/uploads").resolve()
 
 
+def _sniff_image_ext(image_bytes: bytes) -> str:
+    """用 Pillow 识别图片真实格式 → 扩展名;识别不出回退 jpg。
+
+    替代 imghdr (已弃用, 且 Python 3.13 起从标准库移除)。
+    """
+    try:
+        with Image.open(BytesIO(image_bytes)) as im:
+            fmt = (im.format or "").lower()
+    except Exception:
+        return "jpg"
+    return {"jpeg": "jpg", "jpg": "jpg", "png": "png", "webp": "webp", "gif": "gif"}.get(fmt, "jpg")
+
+
 def _save_upload(image_bytes: bytes, content_type: str | None) -> tuple[str, str, str]:
     """存图到 data/uploads/<id>.<ext> + 缩略图, 返回 (image_id, image_url, thumbnail_url)."""
     UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
     # 用 magic bytes 推 ext, 不信任 client 给的 content_type
-    sniffed = imghdr.what(None, h=image_bytes[:32]) or "bin"
-    ext_map = {"jpeg": "jpg", "png": "png", "webp": "webp", "gif": "gif"}
-    ext = ext_map.get(sniffed, "jpg")
+    ext = _sniff_image_ext(image_bytes)
     image_id = uuid.uuid4().hex
     target = UPLOADS_DIR / f"{image_id}.{ext}"
     target.write_bytes(image_bytes)
@@ -59,9 +70,11 @@ def list_garments(
     q = db.query(Garment).filter(Garment.user_id == sid)
     if category:
         q = q.filter(Garment.category == category.value)
-    rows = q.order_by(Garment.created_at.desc()).limit(limit).all()
     if season:
-        rows = [g for g in rows if g.season and season in (g.season or [])]
+        # season 是 JSON 数组, 用文本 LIKE 匹配 "summer" 这类元素 (跨 SQLite/MySQL)。
+        # 必须放在 limit 之前, 否则会先截断再过滤 → 衣物 >limit 时漏件。
+        q = q.filter(cast(Garment.season, String).like(f'%"{season}"%'))
+    rows = q.order_by(Garment.created_at.desc()).limit(limit).all()
     return [GarmentOut.model_validate(g) for g in rows]
 
 
